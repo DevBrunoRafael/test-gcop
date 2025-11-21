@@ -6,9 +6,14 @@ function App() {
   const [inputValue, setInputValue] = useState('');
 
   useEffect(() => {
-    const savedTodos = localStorage.getItem('todos');
-    if (savedTodos) {
-      setTodos(JSON.parse(savedTodos));
+    try {
+      const savedTodos = localStorage.getItem('todos');
+      if (savedTodos) {
+        setTodos(JSON.parse(savedTodos));
+      }
+    } catch (error) {
+      console.error('Error loading todos from localStorage:', error);
+      localStorage.removeItem('todos');
     }
   }, []);
 
@@ -20,7 +25,7 @@ function App() {
     e.preventDefault();
     if (inputValue.trim() !== '') {
       setTodos([...todos, {
-        id: Date.now(),
+        id: crypto.randomUUID(),
         text: inputValue,
         completed: false
       }]);
